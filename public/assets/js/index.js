@@ -1,44 +1,42 @@
-const $noteTitle = $(".note-title");
-const $noteText = $(".note-textarea");
-const $saveNoteBtn = $(".save-note");
-const $newNoteBtn = $(".new-note");
-const $noteList = $(".list-container .list-group");
-const express = require("express");
-const bodyParser = require("body-parser");
+var $noteTitle = $(".note-title");
+var $noteText = $(".note-textarea");
+var $saveNoteBtn = $(".save-note");
+var $newNoteBtn = $(".new-note");
+var $noteList = $(".list-container .list-group");
 
 // activeNote is used to keep track of the note in the textarea
-const activeNote = {};
+var activeNote = {};
 
 // A function for getting all notes from the db
-const getNotes = function() {
+var getNotes = function() {
   return $.ajax({
-    url: "http://localhost:3000/notes",
+    url: "/api/notes",
     method: "GET"
   });
 };
 
 // A function for saving a note to the db
-const saveNote = function(note) {
+var saveNote = function(note) {
   return $.ajax({
-    url: "http://localhost:3000/notes",
+    url: "/api/notes",
     data: note,
     method: "POST"
   });
 };
 
 // A function for deleting a note from the db
-const deleteNote = function(id) {
+var deleteNote = function(id) {
   return $.ajax({
-    url: "http://localhost:3000/notes" + id,
+    url: "api/notes/" + id,
     method: "DELETE"
   });
 };
 
 // If there is an activeNote, display it, otherwise render empty inputs
-const renderActiveNote = function() {
+var renderActiveNote = function() {
   $saveNoteBtn.hide();
 
-  if (activeNote.id) {
+  if (activeNote.id || activeNote.id===0) {
     $noteTitle.attr("readonly", true);
     $noteText.attr("readonly", true);
     $noteTitle.val(activeNote.title);
@@ -127,48 +125,6 @@ var renderNoteList = function(notes) {
   $noteList.append(noteListItems);
 };
 
-const app = express();
-
-// parsing encoded url
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// parsing json
-app.use(bodyParser.json());
-
-//database setup
-const dbConfig = require("../../../../config/database.config.js");
-const mongoose = require("mongoose");
-
-mongoose.Promise = global.Promise;
-
-//database connection
-mongoose
-  .connect(dbConfig.url, {
-    useNewUrlParser: true
-  })
-  .then(() => {
-    console.log("Connected");
-  })
-  .catch(err => {
-    console.log("Could not connect", err);
-    process.exit();
-  });
-
-// outlining get and listen routes
-app.get("/", (req, res) => {
-  res.json({
-    message:
-      "This is the Notating Notes application. Stuck in a meeting? Take note. Wide awake at night with ideas? Take note. Wherever you are and whatever you're doing...take note."
-  });
-});
-
-//requiring notes routes
-require("../../../../app/routes/note.routes.js")(app);
-
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
-});
-
 // Gets notes from the db and renders them to the sidebar
 var getAndRenderNotes = function() {
   return getNotes().then(function(data) {
@@ -185,5 +141,3 @@ $noteText.on("keyup", handleRenderSaveBtn);
 
 // Gets and renders the initial list of notes
 getAndRenderNotes();
-$(".mainNotes").click(getNotes());
-$(".save-note").click(saveNote());
