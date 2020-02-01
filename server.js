@@ -3,13 +3,16 @@ let path = require("path");
 let db = require("./db/db.json");
 let fs = require("fs");
 let util = require("util");
+let heroku = require("heroku"); 
 
 let app = express();
 
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
 
-const PORT = 3000;
+
+//PORT for heroku app
+const PORT = process.env.PORT || 3000;
 
 //Express middleware
 app.use(
