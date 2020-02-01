@@ -89,7 +89,7 @@ let handleNoteView = function() {
   renderActiveNote();
 };
 
-// Sets the activeNote to and empty object and allows the user to enter a new note
+// Sets the activeNote to an empty object and allows the user to enter a new note
 let handleNewNoteView = function() {
   activeNote = {};
   renderActiveNote();
@@ -105,7 +105,7 @@ let handleRenderSaveBtn = function() {
   }
 };
 
-// Render's the list of note titles
+//List of note titles
 let renderNoteList = function(notes) {
   $noteList.empty();
 
@@ -134,6 +134,8 @@ let getAndRenderNotes = function() {
   });
 };
 
+
+//On-click and typing functions
 $saveNoteBtn.on("click", handleNoteSave);
 $noteList.on("click", ".list-group-item", handleNoteView);
 $newNoteBtn.on("click", handleNewNoteView);
